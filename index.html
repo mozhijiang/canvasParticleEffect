@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		#canvas{
+			background-color:black;
+			background-size:100%;
+			position:absolute;
+			left: 50%;
+			top: 50%;
+			margin-top: -250px;
+			margin-left: -500px;
+		}
+	</style>
+</head>
+<body>
+	<canvas id='canvas' width='1000px' height='500px'></canvas>
+	<script>
+		var speed=[4,-8,-4,8];
+		var r=10;
+		var max=30;
+		var toggle=false;
+		var timer,red,gren,blue;
+		var canvas=document.getElementById('canvas');
+		var context=canvas.getContext('2d');
+		var arr=[];
+		canvas.addEventListener('mousedown',event);
+		canvas.addEventListener('mouseup',event);
+		canvas.addEventListener('mousemove',event);
+		function event(e){
+			switch(e.type){
+				case 'mousedown':toggle=true;draw(e.offsetX,e.offsetY);break;
+				case 'mousemove':if(toggle){draw(e.offsetX,e.offsetY);};break;
+				case 'mouseup':toggle=false;draw();;break;
+			}
+		}
+		function draw(x,y){
+			var speedX=speed[parseInt(Math.random()*speed.length)];
+			var speedY=speed[parseInt(Math.random()*speed.length)];
+			var	red=parseInt(Math.random()*255);
+			var	green=parseInt(Math.random()*255);
+			var	blue=parseInt(Math.random()*255);
+			var a=1;
+			var obj={
+				speedX:speedX,
+				speedY:speedY,
+				x:x,
+				y:y,
+				r:red,
+				g:green,
+				b:blue,
+				a:a,
+			}
+			arr.push(obj);
+	}
+	function clearCanvas(){
+		context.clearRect(0,0,canvas.width,canvas.height);
+		for(i=0;i<arr.length;i++){
+			if(arr[i].x+r+arr[i].speedX>=canvas.width){arr[i].speedX*=-1;}
+			if(arr[i].x-r+arr[i].speedX<=0){arr[i].speedX*=-1;}
+			if(arr[i].y+r+arr[i].speedY>=canvas.height){arr[i].speedY*=-1;}
+			if(arr[i].y-r+arr[i].speedY<=0){arr[i].speedY*=-1;}
+			arr[i].x+=arr[i].speedX;arr[i].y+=arr[i].speedY;
+			context.beginPath();
+			context.arc(arr[i].x,arr[i].y,r,0,2*Math.PI);
+			context.fillStyle='rgba('+arr[i].r+','+arr[i].g+','+arr[i].b+','+arr[i].a+')';
+			context.fill();
+			arr[i].a-=0.01;
+			if(arr[i].a<=0){arr.splice(arr[i],1);}
+		};
+		window.requestAnimationFrame(clearCanvas);
+	}
+	window.requestAnimationFrame(clearCanvas);
+</script>
+</body>
+</html>
